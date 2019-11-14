@@ -81,6 +81,11 @@ const UserCard = styled.div `
     padding: 10px 20px;
     box-shadow: 2px 2px darkgray;
     color:black;
+    img {
+        width: 170px;
+        height: 170px;
+        margin: 10px auto;
+    }
     li {
         margin: 5px;
     }
@@ -132,6 +137,7 @@ const UserForm = ({values, errors, touched, status})=> {
             <Cards>
             {users.map(user => (
                 <UserCard key={user.id}>
+                    <img src="http://www.facetheforce.today/random/400?r=1"></img>
                     <ul>
                         <li><span className="heading">Name:</span> {user.name}</li>
                         <li><span className="heading">Email:</span> <span className='email'>{user.email}</span></li>
