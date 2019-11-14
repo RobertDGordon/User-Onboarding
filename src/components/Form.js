@@ -41,6 +41,10 @@ const UserForm = ({values, errors, touched, status})=> {
 
     const [users, setUsers] = useState ([]);
 
+    useEffect(() => {
+        status && setUsers(user => [...users, status])
+    },[status])
+
     return (
         <>
             <FormInput>
@@ -58,8 +62,14 @@ const UserForm = ({values, errors, touched, status})=> {
                         {touched.tos && errors.tos && (<ErrorMsg>{errors.tos}</ErrorMsg>)}
                         </label>
                     </Checkbox>
-                    <button>Log In</button>
+                    <button type='submit'>Log In</button>
                 </Form>
+                {users.map(user => (
+                    <ul key={user.id}>
+                        <li>Name: {user.name}</li>
+                        <li>Email: {user.email}</li>
+                    </ul>
+                ))}
             </FormInput>
         </>
     )
@@ -79,8 +89,15 @@ const FormikUserForm = withFormik({
         email: Yup.string().required('Not a valid email!'),
         password: Yup.string().required('Incorrect password!'),
         tos: Yup.bool().oneOf([true],('Trust me...'))
-      }),
-
+    }),
+    handleSubmit(values, {setStatus}){
+    axios.post('https://reqres.in/api/users/', values)
+    .then (res =>{
+        setStatus(res.data);
+        console.log(res)
+    })
+    .catch (err => console.log(err.response))
+    }
 })(UserForm);
 
 export default FormikUserForm;
