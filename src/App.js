@@ -13,6 +13,9 @@ const MainApp = styled.div `
   font-size: calc(10px + 2vmin);
   color: white;
   margin: 0 auto;
+  background-attachment: fixed;
+  background-image: url('https://wallpaperaccess.com/full/11804.jpg');
+  background-size:cover;
 
 `
 

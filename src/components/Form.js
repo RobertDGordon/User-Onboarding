@@ -12,7 +12,7 @@ const FormInput = styled.div`
     justify-content: center;
     text-align: center;
     width: 250px;
-    height: 250px;
+    height: 270px;
     border: 1px solid black;
     background-color: white;
     border-radius: 10px;
@@ -20,11 +20,19 @@ const FormInput = styled.div`
     padding: 10px 20px;
     box-shadow: 2px 2px darkgray;
     color:black;
+    opacity: 0.95;
     button{
         margin-top: 30px;
-        width: 60%;
+        width: 150px;
         height: 40px;
+        box-shadow: 2px 2px darkgray;
+        border-radius: 5px;
+        background-color: slategray;
+        color: white;
+        &:hover {
+        background-color: lightgray;
     }
+}
 `
 
 const ErrorMsg = styled.div`
@@ -35,56 +43,49 @@ const ErrorMsg = styled.div`
 const Dropdown = styled.div`
     display: flex;
     justify-content: center;
-    /* align-items: center; */
+
     margin: 10px 0px;
     font-size: 0.9rem;
     text-align: center;
     .select{
         margin: 0 10px;
     }
-
 `
 
 const Checkbox = styled.div `
     display: flex;
     justify-content: center;
-    /* align-items: center; */
-    /* border: 1px solid red; */
     margin-right: 7px;
     font-size: 0.8rem;
-    /* text-align: center; */
 `
 
 const Cards = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 90%;
+    width: 85%;
     margin: 0 auto;
 `
-
 
 const UserCard = styled.div `
     display: flex;
     font-size: 1rem;
     flex-direction: column;
-    /* align-items: center; */
     justify-content: center;
-    /* text-align: center; */
-    /* width: 250px; */
-    /* height: 250px; */
     border: 1px solid black;
     background-color: white;
     border-radius: 10px;
     margin: 30px;
-    /* margin-bottom: 130px; */
     padding: 10px 20px;
     box-shadow: 2px 2px darkgray;
     color:black;
+    transition: transform 0.3 ease;
     img {
         width: 170px;
         height: 170px;
         margin: 10px auto;
+        border-radius: 10px;
+        box-shadow: 2px 2px darkgray;
     }
     li {
         margin: 5px;
@@ -96,6 +97,9 @@ const UserCard = styled.div `
     .email {
         font-style: italic;
     }
+    &:hover {
+        transform: scale(1.2);
+    }
 `
 
 const UserForm = ({values, errors, touched, status})=> {
@@ -103,8 +107,16 @@ const UserForm = ({values, errors, touched, status})=> {
     const [users, setUsers] = useState ([]);
 
     useEffect(() => {
-        status && setUsers(user => [...users, status])
+        status && setUsers(users => [...users, status])
     },[status])
+
+    function validateEmail(value) {
+        let error;
+        if (value === 'waffle@syrup.com') {
+          error = 'Email already in use!';
+        }
+        return error;
+      }
 
     return (
         <>
@@ -112,7 +124,7 @@ const UserForm = ({values, errors, touched, status})=> {
                 <Form>
                     <Field type='text' name='name' placeholder='User name' />
                     {touched.name && errors.name && (<ErrorMsg>{errors.name}</ErrorMsg>)}
-                    <Field type='email' name='email' placeholder='Email' />
+                    <Field type='email' name='email' placeholder='Email' validate={validateEmail} />
                     {touched.email && errors.email && (<ErrorMsg>{errors.email}</ErrorMsg>)}
                     <Field type='password' name='password' placeholder='Password' />
                     {touched.password && errors.password && (<ErrorMsg>{errors.password}</ErrorMsg>)}
@@ -137,7 +149,7 @@ const UserForm = ({values, errors, touched, status})=> {
             <Cards>
             {users.map(user => (
                 <UserCard key={user.id}>
-                    <img src="http://www.facetheforce.today/random/400?r=1"></img>
+                    <img src="http://www.facetheforce.today/random/400?r=1" alt='Profile'/>
                     <ul>
                         <li><span className="heading">Name:</span> {user.name}</li>
                         <li><span className="heading">Email:</span> <span className='email'>{user.email}</span></li>
@@ -162,7 +174,7 @@ const FormikUserForm = withFormik({
     },
     validationSchema: Yup.object().shape({
         name: Yup.string().required('User name required!'),
-        email: Yup.string('waffle@syrup.com', 'Email is already taken').email().required('Not a valid email!'),
+        email: Yup.string().email('Invalid email!').required('Email required!'),
         password: Yup.string().min(3, 'Minimum 3 characters').required('Incorrect password!'),
         tos: Yup.bool().oneOf([true],('Trust me...'))
     }),
